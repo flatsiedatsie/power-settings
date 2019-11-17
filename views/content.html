@@ -1,0 +1,50 @@
+<div id="extension-power-settings-content">
+  
+
+  <div>
+        <h2>Shutdown or reboot the system</h2>
+        <button type="button" id="extension-power-settings-shutdown">Shut down</button>
+        <button type="button" id="extension-power-settings-reboot">Reboot</button>
+  </div>
+      
+  <div>
+        <h2>Fullscreen</h2>
+        <button type="button" id="extension-power-settings-fullscreen-button">Toggle fullscreen</button>
+  </div>
+    
+  <h2>Manually set the time</h2>
+  <div id="extension-power-settings-request">
+    <div id="extension-power-settings-form-content">
+      <label for="hours">Hours: </label><input type="number" name="hours" onfocus="this.placeholder=''" id="extension-power-settings-form-hours" required>
+      <br/>
+      <label for="minutes">Minutes: </label><input type="number" name="minutes" onfocus="this.placeholder=''" id="extension-power-settings-form-minutes" required>
+      <br/>
+      <button type="button" id="extension-power-settings-form-browser-time-button">Get time from browser</button>
+      <br/>
+      <!--<h3>Internet time</h3>-->
+      <div class="extension-power-settings-checkbox-container"><input type="checkbox" name="ntp" id="extension-power-settings-form-ntp" checked></div><label for="ntp">Try to get time from the internet?</label>
+      <p class="field-description">If enabled, as soon as there is an internet connection, the manually entered time will be overridden by the time provided by an internet time server.</p>
+      <br/>
+      <button type="button" id="extension-power-settings-form-submit">Set time</button>
+    </div>
+  </div>
+
+  <br>
+  <br>
+
+
+
+
+  <br>
+  <br>
+
+  <div id="extension-power-settings-response">
+    <pre id="extension-power-settings-response-data"></pre>
+  </div>
+
+</div>
+
+
+
+
+

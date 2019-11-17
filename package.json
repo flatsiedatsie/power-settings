@@ -1,0 +1,50 @@
+{
+  "name": "power-settings",
+  "display_name": "Power settings",
+  "version": "0.0.1",
+  "description": "Shutdown and reboot your controller",
+  "author": "Flatsiedatsie",
+  "main": "main.py",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "mozilla",
+    "iot",
+    "extension",
+    "example"
+  ],
+  "homepage": "https://github.com/mozilla-iot/example-extension",
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mozilla-iot/example-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mozilla-iot/example-extension/issues"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.5.1"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "SHA256SUMS",
+    "css/extension.css",
+    "images/menu-icon.svg",
+    "main.py",
+    "js/extension.js",
+    "manifest.json",
+    "views/content.html"
+  ],
+  "moziot": {
+    "api": {
+      "min": 2,
+      "max": 2
+    },
+    "type": "extension",
+    "plugin": true,
+		"exec": "python3 {path}/main.py",
+  }
+}

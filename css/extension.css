@@ -1,0 +1,117 @@
+#main-menu #extension-power-settings-menu-item {
+  background-image: url('../images/menu-icon.svg');
+}
+
+
+
+
+
+#extension-power-settings-view {
+  height: 100%; /*calc(100% - 7.6rem);*/
+  box-sizing: border-box;
+  /*overflow: auto;*/
+  position: relative;
+  top: 7.6rem;
+  /*left:0;*/
+	display:flex;
+	flex-direction: column;
+  align-items: center;
+  justify-content: center;
+	flex-direction: column;
+	overflow: scroll;
+}
+
+
+
+#extension-power-settings-content {
+  position: relative;
+  text-align: left;
+  font-size: 1.6rem;
+  color: #fff;
+  max-width: 60rem;
+  margin: 0 auto;
+	/*flex: 1 0 auto;*/
+	height:100%;
+	max-height: 100%;
+}
+
+
+#extension-power-settings-content label{
+	min-width: 100px;
+	display: inline-block;
+}
+
+#extension-power-settings-content input:invalid{
+	/*border:2px solid red;*/
+}
+
+@media screen and (min-width: 1024px) {
+	#extension-power-settings-view{
+		left:6rem;
+		top: 0;
+		height:100vh; 
+		position:absolute;
+	}
+	#extension-power-settings-content{
+		height:auto;
+	  /*top: calc(50%);
+	  transform: translateY(-50%);*/
+	}
+}
+
+
+
+
+#extension-power-settings-shutdown,
+#extension-power-settings-reboot,
+#extension-power-settings-fullscreen-button,
+#extension-power-settings-form-submit {
+  font-size: 1.6rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+#extension-power-settings-shutdown:hover,
+#extension-power-settings-reboot:hover,
+#extension-power-settings-fullscreen-button:hover,
+#extension-power-settings-form-submit:hover{
+	background-color: LightGreen;
+}
+
+
+.extension-power-settings-checkbox-container{
+	text-align:left;
+	width:100px;
+	display: inline-block;
+	margin-top:1rem;
+}
+
+#extension-power-settings-form-browser-time-button{
+	margin-left:100px;
+}
+
+#extension-power-settings-form-ntp{
+	-moz-transform: scale(1.50);
+  -webkit-transform: scale(1.50);
+  -o-transform: scale(1.50);
+  transform: scale(1.50);
+	margin-right: .5rem;
+	margin-top: 1.5rem;
+}
+
+#extension-power-settings-content .control-label{
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+	margin-top:1rem;
+}
+#extension-power-settings-content .field-description{
+	margin-top: .5rem;
+	font-size: 1.5rem;
+	margin-bottom: 0.5rem;
+	padding-left: 100px;
+	/*width: calc(100vw - 4rem);
+	box-sizing: border-box;
+	max-width: 50rem;*/
+}
