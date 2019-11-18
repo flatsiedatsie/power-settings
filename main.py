@@ -1,4 +1,4 @@
-"""MySensors adapter for Mozilla WebThings Gateway."""
+"""Power settings add-on for Mozilla WebThings Gateway."""
 
 from os import path
 import functools
