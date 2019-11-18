@@ -30,8 +30,6 @@
 			const fullsceen_button =
         document.getElementById('extension-power-settings-fullscreen-button');
 				
-				
-				
       const pre =
         document.getElementById('extension-power-settings-response-data');
 			const content = 
@@ -75,7 +73,6 @@
 			
 			
 			fullsceen_button.addEventListener('click', () => {
-				//content.innerHTML = "<h2>Shutting down...</h2>";
 			  
 				var elem = document.documentElement;
 			  if (!document.fullscreenElement && !document.mozFullScreenElement &&
@@ -109,35 +106,21 @@
           `/extensions/${this.id}/api/shutdown`,
           {}
         )
-				/*
-				.then((body) => {
-          pre.innerText = JSON.stringify(body, null, 2);
-        }).catch((e) => {
-          pre.innerText = e.toString();
-        });
-					*/
       });			
 			
 			
       reboot.addEventListener('click', () => {
         content.innerHTML = "<h2>Rebooting...</h2>";
-				window.API.postJson(
-          `/extensions/${this.id}/api/reboot`,
-          {}
-        )
-				/*
-				.then((body) => {
-          pre.innerText = JSON.stringify(body, null, 2);
-        }).catch((e) => {
-          pre.innerText = e.toString();
-        });
-				*/
+				window.API.postJson('/system/actions', {action: 'restartSystem'}).catch(console.error);
+				//window.API.postJson(
+        //  `/extensions/${this.id}/api/reboot`,
+        //  {}
+				//)
       });
 			
 			
       browser_time_button.addEventListener('click', () => {
 				var powerSettingsCurrentTime = new Date();
-				//console.log(powerSettingsCurrentTime);
 				//var powerSettingsTime = powerSettingsCurrentTime.getTime();
 				//powerSettingsCurrentTime.setTime( powerSettingsCurrentTime.getTime() + new Date().getTimezoneOffset()*60*1000 );
 				//console.log(powerSettingsCurrentTime);
@@ -153,10 +136,6 @@
         `/extensions/${this.id}/api/init`,
         {'init':1}
       ).then((body) => {
-        //console.log("Got response")
-				//console.log(body);
-				//pre.innerText = JSON.stringify(body, null, 2);
-				
 				hours.placeholder = body['hours'];
 				minutes.placeholder = body['minutes'];
 				ntp.checked = body['ntp'];
@@ -168,7 +147,6 @@
   }
 
   new PowerSettings();
-	
 
 	
 })();

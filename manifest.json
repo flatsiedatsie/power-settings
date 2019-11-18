@@ -19,12 +19,12 @@
       "strict_min_version": "0.10.0"
     }
   },
-  "homepage_url": "https://github.com/mozilla-iot/example-extension",
+  "homepage_url": "https://github.com/flatsiedatsie/power-settings",
   "id": "power-settings",
   "license": "MPL-2.0",
   "manifest_version": 1,
   "name": "Power settings",
-  "short_name": "Power",
+  "short_name": "PowerSet",
   "version": "0.0.1",
   "web_accessible_resources": [
     "css/*.css",
