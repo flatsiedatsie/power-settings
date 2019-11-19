@@ -129,7 +129,7 @@
       });
 
 			
-			console.log("Initing power settings");
+			//console.log("Initing power settings");
 			//console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
 			// Get the server time
       window.API.postJson(
