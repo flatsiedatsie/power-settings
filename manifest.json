@@ -14,7 +14,7 @@
   "gateway_specific_settings": {
     "webthings": {
       "exec": "python3 {path}/main.py",
-      "primary_type": "adapter",
+      "primary_type": "extension",
       "strict_max_version": "*",
       "strict_min_version": "0.10.0"
     }
@@ -23,8 +23,8 @@
   "id": "power-settings",
   "license": "MPL-2.0",
   "manifest_version": 1,
-  "name": "Power settings",
-  "short_name": "PowerSet",
+  "name": "Power Settings",
+  "short_name": "Power",
   "version": "0.0.1",
   "web_accessible_resources": [
     "css/*.css",

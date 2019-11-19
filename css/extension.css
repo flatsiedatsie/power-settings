@@ -19,7 +19,7 @@
   align-items: center;
   justify-content: center;
 	flex-direction: column;
-	overflow: scroll;
+	overflow: auto;
   position: relative;
   text-align: left;
   font-size: 1.6rem;

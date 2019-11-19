@@ -1,108 +1,197 @@
-"""Candle adapter for Mozilla WebThings Gateway."""
+"""Power Settings API handler."""
 
+
+import functools
+import json
 import os
-import sys
-import time
-#from time import sleep
-#from datetime import datetime, timedelta
-import logging
+from time import sleep
 import datetime
-import urllib
-import requests
-#import string
-#import urllib2
-#import json
-#import re
 import subprocess
-#from subprocess import STDOUT, check_output
-#import threading
-#from threading import Timer
-#import serial #as ser
-#import serial.tools.list_ports as prtlst
-#from flask import Flask,Response, request,render_template,jsonify, url_for
-
-#import asyncio
-
-from gateway_addon import Adapter, Device, Database
 
 
 try:
-    #from gateway_addon import APIHandler, APIResponse
-    from .api_handler import *
-    print("PowerSettingsAPIHandler imported.")
+    from gateway_addon import APIHandler, APIResponse
+    #print("succesfully loaded APIHandler and APIResponse from gateway_addon")
 except:
-    print("Unable to load PowerSettingsAPIHandler (which is used for UX extention)")
+    print("Import APIHandler and APIResponse from gateway_addon failed. Use at least WebThings Gateway version 0.10")
+
+print = functools.partial(print, flush=True)
 
 
+class PowerSettingsAPIHandler(APIHandler):
+    """Power settings API handler."""
 
+    def __init__(self, verbose=False):
+        """Initialize the object."""
+        #print("INSIDE API HANDLER INIT")
+        try:
+            manifest_fname = os.path.join(
+                os.path.dirname(__file__),
+                '..',
+                'manifest.json'
+            )            
+            #self.adapter = adapter
+            #print("ext: self.adapter = " + str(self.adapter))
 
+            with open(manifest_fname, 'rt') as f:
+                manifest = json.load(f)
 
+            APIHandler.__init__(self, manifest['id'])
+            self.manager_proxy.add_api_handler(self)
+            
+            self.DEBUG = False
+            
+            if self.DEBUG:
+                print("self.manager_proxy = " + str(self.manager_proxy))
+                print("Created new API HANDLER: " + str(manifest['id']))
+        except Exception as e:
+            print("Failed to init UX extension API handler: " + str(e))
+        
+        
 
-
-
-_TIMEOUT = 3
-
-__location__ = os.path.realpath(
-    os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-_CONFIG_PATHS = [
-    os.path.join(os.path.expanduser('~'), '.mozilla-iot', 'config'),
-]
-
-if 'MOZIOT_HOME' in os.environ:
-    _CONFIG_PATHS.insert(0, os.path.join(os.environ['MOZIOT_HOME'], 'config'))
-
-
-
-
-#
-# ADAPTER
-#
-
-class PowerSettingsAdapter(Adapter):
-    """Adapter for Power settings"""
-
-    def __init__(self, verbose=True):
+    def handle_request(self, request):
         """
-        Initialize the object.
+        Handle a new API request for this handler.
 
-        verbose -- whether or not to enable verbose logging
+        request -- APIRequest object
         """
-        print("initialising adapter from class")
-        self.adding_via_timer = False
-        self.pairing = False
-        self.name = self.__class__.__name__
-        self.adapter_name = 'power-settings'
-        Adapter.__init__(self, self.adapter_name, self.adapter_name, verbose=verbose)
-        #print("Adapter ID = " + self.get_id())
         
-        print("paths:" + str(_CONFIG_PATHS))
+        try:
         
-        self.add_on_path = os.path.join(os.path.expanduser('~'), '.mozilla-iot', 'addons', self.adapter_name)
-        print("self.add_on_path = " + str(self.add_on_path))
+            if request.method != 'POST':
+                return APIResponse(status=404)
+            
+            if request.path == '/init' or request.path == '/set-time' or request.path == '/set-ntp' or request.path == '/shutdown' or request.path == '/reboot':
 
-        self.DEBUG = True
-        
-        
-        # Get the user's settings
-        #self.add_from_config()
-        
-        
+                try:
+                    if request.path == '/init':
+                        response = {}
+                        
+                        if self.DEBUG:
+                            print("Initialising")
+                        try:
+                            now = datetime.datetime.now()
+                            current_ntp_state = True
+                        
+                            try:
+                                for line in run_command("timedatectl show").splitlines():
+                                    if self.DEBUG:
+                                        print(line)
+                                    if line.startswith( 'NTP=no' ):
+                                        current_ntp_state = False
+                            except Exception as ex:
+                                print("Error getting NTP status: " + str(ex))
+                            
+                            
+                            response = {'hours':now.hour,'minutes':now.minute,'ntp':current_ntp_state}
+                            if self.DEBUG:
+                                print("Init response: " + str(response))
+                        except Exception as ex:
+                            print("Init error: " + str(ex))
+                        
+                        return APIResponse(
+                          status=200,
+                          content_type='application/json',
+                          content=json.dumps(response),
+                        )
+                        
+                    
+                    elif request.path == '/set-time':
+                        try:
+                            self.set_time(str(request.body['hours']),request.body['minutes'])
+                            return APIResponse(
+                              status=200,
+                              content_type='application/json',
+                              content=json.dumps("Time set"),
+                            )
+                        except Exception as ex:
+                            print("Error setting time: " + str(ex))
+                            return APIResponse(
+                              status=500,
+                              content_type='application/json',
+                              content=json.dumps("Error while setting time: " + str(ex)),
+                            )
+                            
+                        
 
-
+                        
+                    elif request.path == '/set-ntp':
+                        print("New NTP state = " + str(request.body['ntp']))
+                        self.set_ntp_state(request.body['ntp'])
+                        return APIResponse(
+                          status=200,
+                          content_type='application/json',
+                          content=json.dumps("Changed Network Time state to " + str(request.body['ntp'])),
+                        )
+                
+                    elif request.path == '/shutdown':
+                        self.shutdown()
+                        return APIResponse(
+                          status=200,
+                          content_type='application/json',
+                          content=json.dumps("Shutting down"),
+                        )
+                
+                    elif request.path == '/reboot':
+                        self.reboot()
+                        return APIResponse(
+                          status=200,
+                          content_type='application/json',
+                          content=json.dumps("Restarting"),
+                        )
+                    else:
+                        return APIResponse(
+                          status=500,
+                          content_type='application/json',
+                          content=json.dumps("API error"),
+                        )
+                        
+                except Exception as ex:
+                    print(str(ex))
+                    return APIResponse(
+                      status=500,
+                      content_type='application/json',
+                      content=json.dumps("Error"),
+                    )
+                    
+            else:
+                return APIResponse(status=404)
+                
+        except Exception as e:
+            print("Failed to handle UX extension API request: " + str(e))
+            return APIResponse(
+              status=500,
+              content_type='application/json',
+              content=json.dumps("API Error"),
+            )
+        
     def set_time(self, hours, minutes, seconds=0):
         print("Setting the new time")
         
-        from datetime import datetime
-        the_date = str(datetime.now().strftime('%Y-%m-%d'))
+        if hours.isdigit() and minutes.isdigit():
+            
+            the_date = str(datetime.datetime.now().strftime('%Y-%m-%d'))
         
-        time_command = "sudo date --set '" + the_date + " "  + hours + ":" + minutes + ":" + seconds + "'"
-        print("new set date command: " + str(time_command))
+            time_command = "sudo date --set '" + the_date + " "  + str(hours) + ":" + str(minutes) + ":00'"
+            print("new set date command: " + str(time_command))
         
+            try:
+                os.system(time_command) 
+            except Exception as e:
+                print("Error setting new time: " + str(e))
+
+
+    def set_ntp_state(self,new_state):
+        print("Setting NTP state")
         try:
-            os.system(time_command) 
+            if new_state:
+                os.system('sudo timedatectl set-ntp on') 
+                print("Network time turned on")
+            else:
+                os.system('sudo timedatectl set-ntp off') 
+                print("Network time turned off")
         except Exception as e:
-            print("Error setting new time: " + str(e))
+            print("Error changing NTP state: " + str(e))
 
 
     def shutdown(self):
@@ -125,6 +214,7 @@ class PowerSettingsAdapter(Adapter):
     def unload(self):
         if self.DEBUG:
             print("Shutting down adapter")
+        os.system('sudo timedatectl set-ntp on') # If add-on is removed or disabled, re-enable network time protocol.
 
 
 
@@ -143,19 +233,3 @@ def run_command(cmd, timeout_seconds=60):
     except Exception as e:
         print("Error running Arduino CLI command: "  + str(e))
         
-
-def run_command_json(cmd, timeout_seconds=60):
-    try:
-        
-        result = subprocess.run(cmd, timeout=timeout_seconds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
-
-        if result.returncode == 0:
-            return result.stdout #.decode('utf-8')
-        else:
-            if result.stderr:
-                return "Error: " + str(result.stderr)  #.decode('utf-8'))
-                #Style.error('Preprocess failed: ')
-                #print(result.stderr)
-        
-    except Exception as e:
-        print("Error running Arduino JSON CLI command: "  + str(e))
