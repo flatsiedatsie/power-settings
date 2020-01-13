@@ -111,7 +111,7 @@
 			
       reboot.addEventListener('click', () => {
         content.innerHTML = "<h2>Rebooting...</h2>";
-				window.API.postJson('/system/actions', {action: 'restartSystem'}).catch(console.error);
+				window.API.postJson('/settings/system/actions', {action: 'restartSystem'}).catch(console.error);
 				//window.API.postJson(
         //  `/extensions/${this.id}/api/reboot`,
         //  {}
