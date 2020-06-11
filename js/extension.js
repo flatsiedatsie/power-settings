@@ -110,7 +110,7 @@
 			
 			
       reboot.addEventListener('click', () => {
-        content.innerHTML = '<h2>Rebooting...</h2><p>This page will reload automatically in 20 second. Or <a href="/" style="color:white">click here</a> to try now.</p>';
+        content.innerHTML = '<h2>Rebooting...</h2><p>This page will reload automatically in 30 seconds. Or <a href="/" style="color:white">click here</a> to try now.</p>';
 				window.API.postJson('/settings/system/actions', {action: 'restartSystem'}).catch(console.error);
 				
 				var getUrl = window.location;
