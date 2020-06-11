@@ -121,7 +121,7 @@
 					//location.replace(baseUrl);
 					window.location.href = baseUrl;
 				
-				}, 20000);
+				}, 30000);
 				//window.API.postJson(
         //  `/extensions/${this.id}/api/reboot`,
         //  {}
