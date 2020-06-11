@@ -2,7 +2,7 @@
 
 version=$(grep '"version":' manifest.json | cut -d: -f2 | cut -d\" -f2)
 
-rm -rf *.tgz SHA256SUMS package
+rm -rf *.tgz SHA256SUMS package lib
 rm -rf ._*
 
 mkdir package
