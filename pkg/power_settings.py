@@ -1,13 +1,14 @@
 """Power Settings API handler."""
 
 
-import functools
-import json
 import os
+import sys
+sys.path.append(path.join(path.dirname(path.abspath(__file__)), 'lib'))
+import json
 from time import sleep
 import datetime
+import functools
 import subprocess
-
 
 try:
     from gateway_addon import APIHandler, APIResponse
@@ -16,6 +17,18 @@ except:
     print("Import APIHandler and APIResponse from gateway_addon failed. Use at least WebThings Gateway version 0.10")
 
 print = functools.partial(print, flush=True)
+
+
+
+_TIMEOUT = 3
+
+_CONFIG_PATHS = [
+    os.path.join(os.path.expanduser('~'), '.webthings', 'config'),
+]
+
+if 'WEBTHINGS_HOME' in os.environ:
+    _CONFIG_PATHS.insert(0, os.path.join(os.environ['WEBTHINGS_HOME'], 'config'))
+
 
 
 class PowerSettingsAPIHandler(APIHandler):
@@ -116,7 +129,8 @@ class PowerSettingsAPIHandler(APIHandler):
 
                         
                     elif request.path == '/set-ntp':
-                        print("New NTP state = " + str(request.body['ntp']))
+                        if self.DEBUG:
+                            print("New NTP state = " + str(request.body['ntp']))
                         self.set_ntp_state(request.body['ntp'])
                         return APIResponse(
                           status=200,
@@ -147,7 +161,7 @@ class PowerSettingsAPIHandler(APIHandler):
                         )
                         
                 except Exception as ex:
-                    print(str(ex))
+                    print("Power settings server error: " + str(ex))
                     return APIResponse(
                       status=500,
                       content_type='application/json',
@@ -166,7 +180,8 @@ class PowerSettingsAPIHandler(APIHandler):
             )
         
     def set_time(self, hours, minutes, seconds=0):
-        print("Setting the new time")
+        if self.DEBUG:
+            print("Setting the new time")
         
         if hours.isdigit() and minutes.isdigit():
             
@@ -182,7 +197,8 @@ class PowerSettingsAPIHandler(APIHandler):
 
 
     def set_ntp_state(self,new_state):
-        print("Setting NTP state")
+        if self.DEBUG:
+            print("Setting NTP state")
         try:
             if new_state:
                 os.system('sudo timedatectl set-ntp on') 
@@ -195,7 +211,7 @@ class PowerSettingsAPIHandler(APIHandler):
 
 
     def shutdown(self):
-        print("Shutting down gateway")
+        print("Power settings: shutting down gateway")
         try:
             os.system('sudo shutdown now') 
         except Exception as e:
@@ -203,7 +219,7 @@ class PowerSettingsAPIHandler(APIHandler):
 
 
     def reboot(self):
-        print("Rebooting gateway")
+        print("Power settings: s rebooting gateway").
         try:
             os.system('sudo reboot') 
         except Exception as e:
@@ -220,7 +236,6 @@ class PowerSettingsAPIHandler(APIHandler):
 
 def run_command(cmd, timeout_seconds=60):
     try:
-        
         p = subprocess.run(cmd, timeout=timeout_seconds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
 
         if p.returncode == 0:
