@@ -9,6 +9,9 @@
         .then((res) => res.text())
         .then((text) => {
           this.content = text;
+		  if( document.location.href.endsWith("power-settings") ){
+		  	this.show();
+		  }
         })
         .catch((e) => console.error('Failed to fetch content:', e));
     }
