@@ -219,7 +219,7 @@ class PowerSettingsAPIHandler(APIHandler):
 
 
     def reboot(self):
-        print("Power settings: s rebooting gateway").
+        print("Power settings: s rebooting gateway")
         try:
             os.system('sudo reboot') 
         except Exception as e:
