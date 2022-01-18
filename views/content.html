@@ -1,19 +1,36 @@
 <div id="extension-power-settings-content">
-  
+    
+    <div id="extension-power-settings-waiting" style="display:none">
+        <div id="extension-power-settings-waiting-message">
+        </div>
+        <div class="extension-power-settings-spinner">
+            <div></div><div></div><div></div><div></div>
+        </div>
+    </div>
+    
     <div id="extension-power-settings-content-container">
-          <div>
-                <h2>Shutdown or reboot the system</h2>
-                <button type="button" id="extension-power-settings-shutdown">Shut down</button>
-                <button type="button" id="extension-power-settings-reboot">Reboot</button>
+          
+          <div id="extension-power-settings-centered">
+              
+              <div id="extension-power-settings-main-buttons">
+                <!--<h2>Shutdown or reboot the system</h2>-->
+                <button type="button" id="extension-power-settings-reboot"  title="Shuts down and then powers up the controller again">Reboot</button>
+                <button type="button" id="extension-power-settings-shutdown" title="Shuts down the controller">Shut down</button>
+                <button type="button" id="extension-power-settings-restart" title="Restarts the controller software without completely reboot">Restart</button>
+              </div>
+              
+              <br/><br/>
+              <div id="extension-power-settings-secondary-buttons"><button type="button" id="extension-power-settings-show-time-settings-button">Set clock</button></div>
+              
           </div>
 
-          <div>
-                <h2>Fullscreen</h2>
-                <button type="button" id="extension-power-settings-fullscreen-button">Toggle fullscreen</button>
-          </div>
-
-          <h2>Manually set the time</h2>
-          <div id="extension-power-settings-request">
+          
+          
+          <div id="extension-power-settings-time-container">
+                
+                <h2>Manually set the time</h2>
+                <p>Most smart home devices connect to the internet get the current time. This can share your IP address with third parties who provide that service. Since nothing is free, you might want to set the time manually instead. However, you will have to do this every time you reboot.</p>
+                <br/>
                 <div id="extension-power-settings-form-content">
                       <label for="hours">Hours: </label><input type="number" name="hours" onfocus="this.placeholder=''" id="extension-power-settings-form-hours" required>
                       <br/>
@@ -21,22 +38,27 @@
                       <br/>
                       <button type="button" id="extension-power-settings-form-browser-time-button">Get time from browser</button>
                       <br/>
-                      <!--<h3>Internet time</h3>-->
-                      <div class="extension-power-settings-checkbox-container"><input type="checkbox" name="ntp" id="extension-power-settings-form-ntp" checked></div><label for="ntp">Try to get time from the internet?</label>
-                      <p class="field-description">If enabled, as soon as there is an internet connection, the manually entered time will be overridden by the time provided by an internet time server.</p>
                       <br/>
-                      <button type="button" id="extension-power-settings-form-submit">Set time</button>
+                      <!--<h3>Internet time</h3>-->
+                      <div class="extension-power-settings-checkbox-container"><input type="checkbox" name="ntp" id="extension-power-settings-form-ntp" checked></div><label for="ntp">Allow time from the internet?</label>
+                      <p class="field-description">If enabled, as soon as there is an internet connection, any manually provided time will be overridden by an internet NTP server.</p>
+                      <br/>
+                      <div style="text-align:right">
+                          <button type="button" id="extension-power-settings-form-submit">Set clock</button>
+                      </div>
                 </div>
           </div>
 
           <br>
           <br>
 
-          <div id="extension-power-settings-response">
+          <div id="extension-power-settings-response" style="display:none">
                 <pre id="extension-power-settings-response-data"></pre>
           </div>
-
+          
     </div>
+    <div id="extension-power-settings-fullscreen-button-container"><button id="extension-power-settings-fullscreen-button" class="icon-button" data-l10n-id="fullscreen-button" aria-label="Fullscreen"></button></div>
+    
 </div>
 
 
