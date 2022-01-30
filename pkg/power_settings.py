@@ -57,6 +57,10 @@ class PowerSettingsAPIHandler(APIHandler):
             if self.DEBUG:
                 print("self.manager_proxy = " + str(self.manager_proxy))
                 print("Created new API HANDLER: " + str(manifest['id']))
+                
+                
+            print(str(self.user_profile))
+                
         except Exception as e:
             print("Failed to init UX extension API handler: " + str(e))
         
@@ -74,7 +78,7 @@ class PowerSettingsAPIHandler(APIHandler):
             if request.method != 'POST':
                 return APIResponse(status=404)
             
-            if request.path == '/init' or request.path == '/set-time' or request.path == '/set-ntp' or request.path == '/shutdown' or request.path == '/reboot':
+            if request.path == '/init' or request.path == '/set-time' or request.path == '/set-ntp' or request.path == '/shutdown' or request.path == '/reboot'  or request.path == '/restart':
 
                 try:
                     if request.path == '/init':
@@ -118,7 +122,8 @@ class PowerSettingsAPIHandler(APIHandler):
                               content=json.dumps("Time set"),
                             )
                         except Exception as ex:
-                            print("Error setting time: " + str(ex))
+                            if self.DEBUG:
+                                print("Error setting time: " + str(ex))
                             return APIResponse(
                               status=500,
                               content_type='application/json',
@@ -151,8 +156,17 @@ class PowerSettingsAPIHandler(APIHandler):
                         return APIResponse(
                           status=200,
                           content_type='application/json',
+                          content=json.dumps("Rebooting"),
+                        )
+                        
+                    elif request.path == '/restart':
+                        self.restart()
+                        return APIResponse(
+                          status=200,
+                          content_type='application/json',
                           content=json.dumps("Restarting"),
                         )
+                        
                     else:
                         return APIResponse(
                           status=500,
@@ -161,7 +175,8 @@ class PowerSettingsAPIHandler(APIHandler):
                         )
                         
                 except Exception as ex:
-                    print("Power settings server error: " + str(ex))
+                    if self.DEBUG:
+                        print("Power settings server error: " + str(ex))
                     return APIResponse(
                       status=500,
                       content_type='application/json',
@@ -172,7 +187,8 @@ class PowerSettingsAPIHandler(APIHandler):
                 return APIResponse(status=404)
                 
         except Exception as e:
-            print("Failed to handle UX extension API request: " + str(e))
+            if self.DEBUG:
+                print("Failed to handle UX extension API request: " + str(e))
             return APIResponse(
               status=500,
               content_type='application/json',
@@ -188,7 +204,8 @@ class PowerSettingsAPIHandler(APIHandler):
             the_date = str(datetime.datetime.now().strftime('%Y-%m-%d'))
         
             time_command = "sudo date --set '" + the_date + " "  + str(hours) + ":" + str(minutes) + ":00'"
-            print("new set date command: " + str(time_command))
+            if self.DEBUG:
+                print("new set date command: " + str(time_command))
         
             try:
                 os.system(time_command) 
@@ -202,16 +219,19 @@ class PowerSettingsAPIHandler(APIHandler):
         try:
             if new_state:
                 os.system('sudo timedatectl set-ntp on') 
-                print("Network time turned on")
+                if self.DEBUG:
+                    print("Network time turned on")
             else:
                 os.system('sudo timedatectl set-ntp off') 
-                print("Network time turned off")
+                if self.DEBUG:
+                    print("Network time turned off")
         except Exception as e:
             print("Error changing NTP state: " + str(e))
 
 
     def shutdown(self):
-        print("Power settings: shutting down gateway")
+        if self.DEBUG:
+            print("Power settings: shutting down gateway")
         try:
             os.system('sudo shutdown now') 
         except Exception as e:
@@ -219,9 +239,19 @@ class PowerSettingsAPIHandler(APIHandler):
 
 
     def reboot(self):
-        print("Power settings: s rebooting gateway")
+        if self.DEBUG:
+            print("Power settings: rebooting gateway")
         try:
             os.system('sudo reboot') 
+        except Exception as e:
+            print("Error rebooting: " + str(e))
+
+
+    def restart(self):
+        if self.DEBUG:
+            print("Power settings: restarting gateway")
+        try:
+            os.system('sudo systemctl restart webthings-gateway.service') 
         except Exception as e:
             print("Error rebooting: " + str(e))
 
