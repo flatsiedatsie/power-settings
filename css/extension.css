@@ -3,6 +3,10 @@
 }
 
 
+#extension-power-settings-show-reset-settings-button{
+    display:none!important;
+}
+
 /*  fullscreen icon  */
 #extension-power-settings-fullscreen-button-container{
     position: fixed;
@@ -26,6 +30,18 @@
 }
 
 
+.kiosk #extension-power-settings-fullscreen-button-container{
+    display:none;
+}
+
+
+#extension-power-settings-restart{
+    display:none;
+}
+
+.developer #extension-power-settings-restart{
+    display:inline-block;
+}
 
 #extension-power-settings-secondary-buttons{
     text-align:center;
@@ -79,7 +95,7 @@
 	/*border:2px solid red;*/
 }
 
-#extension-power-settings-time-container{
+.extension-power-settings-container{
     display:none;
     background-color:rgba(0,0,0,.2);
     border-radius:.5rem;
